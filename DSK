@@ -1,0 +1,277 @@
+#include <stdio.h>
+#include <conio.h>
+#include <string.h>
+#include <iostream>
+using namespace std;
+
+#define MAXLIST 100
+typedef struct Sinhvien {
+	char HoTen[MAXLIST];
+	char MSSV[MAXLIST];
+}Sinhvien;
+
+typedef struct danhsachdac {
+	Sinhvien dssv[MAXLIST];
+	int num;
+}List;
+
+// Khoi tao
+void Init(List& plist) {
+	plist.num = 0;
+}
+// Xac dinh so nut cua danh sách
+int ListSize(List plist) {
+	return plist.num;
+}
+// Kiem tra danh sách rong
+int IsEmpty(List plist) {
+	return (plist.num == 0);
+}
+// Kiem tra danh sách day
+int IsFull(List plist) {
+	return (plist.num == MAXLIST);
+}
+
+// Nhap thong tin sinh vien
+void Nhapsv(Sinhvien& sv) {
+	int i;
+	printf("\n\t Nhap ho ten sinh vien: ");
+	fflush(stdin);
+	gets(sv.HoTen);
+	printf("\t Nhap MSSV: ");
+	fflush(stdin);
+	gets(sv.MSSV);
+}
+
+// Nhap danh sach sinh vien
+void Nhapds(List& plist, Sinhvien& sv)
+{
+	int i;
+	do
+	{
+		printf("\n\t Nhap so luong sinh vien: ");
+		scanf("%d", &plist.num);
+	} while (plist.num < 0);
+	if (IsFull(plist))
+	{
+		printf("\n ==> Danh sach bi day!");
+		return;
+	}
+	else
+	{
+		for (i = 0; i < plist.num; i++)
+		{
+			printf("\n\t -- Nhap thong tin sinh vien thu %d -- ", i + 1);
+			Nhapsv(plist.dssv[i]);
+		}
+	}
+}
+
+// Xuat sinh vien
+void Xuatsv(Sinhvien sv)
+{
+	int i;
+	printf("\n\t Ho ten: %s", sv.HoTen);
+	printf("\n\t Ma so sinh vien: %s\n", sv.MSSV);
+}
+
+// Xuat danh sách
+void ShowList(List plist)
+{
+	if (plist.num == 0)
+	{
+		printf("\n\t ==> Danh sach khong co sinh vien!");
+		return;
+	}
+	else
+	{
+		for (int i = 0; i < plist.num; i++)
+		{
+			printf("\n\t -- Thong tin sinh vien thu: %d --", i + 1);
+			Xuatsv(plist.dssv[i]);
+		}
+	}
+}
+
+// Thêm mot sinh vien moi vào danh sách
+void Insert(List& plist)
+{
+	Sinhvien sv;
+	int a;
+	a = plist.num++;
+	Nhapsv(plist.dssv[a]);
+}
+
+// Xoá mot sinh vien ra khoi danh sách
+int Delete(List& plist, int pos)
+{
+	Sinhvien sv;
+	int i;
+	if (pos < 0 || pos >= ListSize(plist)) {
+		printf("Vi tri khong hop le");
+		return;
+	}
+	else {
+		if (IsEmpty(plist)) {
+			printf("Khong co sinh vien de xoa");
+			return;
+		}
+
+		else
+		{
+			for (int i = pos - 1; i < ListSize(plist) - 2; i++) {
+				plist.dssv[i] = plist.dssv[i + 1];
+			}
+		}
+	}
+	return plist.num - 1;
+}
+// Hieu chinh thong tin sinh vien
+void Update(List & plist, int pos) {
+		char a[MAXLIST];
+		Sinhvien sv;
+		int i, tim = 0;
+		if (pos < 0 || pos >= ListSize(plist)) {
+			printf("Vi tri khong hop le");
+			return;
+		}
+		else {
+			if (IsEmpty(plist)) {
+				printf("Khong co sinh vien de hieu chinh");
+				return;
+			}
+			else {
+				for (i = pos; i < ListSize(plist); i++) {
+					if (strcmp(plist.dssv[i].MSSV, a)) {
+						tim = 1;
+						printf("\n\t <> Cap nhat thong tin sinh vien \n");
+						Nhapsv(plist.dssv[i]);
+						printf("\n\t <> Danh sach sinh vien sau khi cap nhat: \n");
+
+						break;
+					}
+				}
+			}
+		}
+		if (tim == 0)
+			printf("\n\t==> Sinh vien co MSSV khong ton tai");
+	}
+
+// Sap xep tang dan theo MSSV
+void SortMSSV(List& plist, Sinhvien sv)
+{
+	for (int i = 0; i < plist.num - 1; i++) {
+		for (int j = i + 1; j < plist.num; j++) {
+			if (strcmp(plist.dssv[i].MSSV, plist.dssv[j].MSSV) == 1) {
+				swap(sv.HoTen[i], sv.HoTen[j]);
+				swap(sv.MSSV[i], sv.MSSV[j]);
+			}
+		}
+	}
+}
+
+// Tim kiem sinh vien
+int Find(List plist, char x[MAXLIST])
+{
+	Sinhvien sv;
+	for (int i = 0; i < plist.num; i++)
+	{
+		if (strcmp(plist.dssv[i].MSSV, x) == 0)
+		{
+			printf("Thong tin sinh vien ban tim kiem la\n");
+			Xuatsv(plist.dssv[i]);
+			return i;
+		}
+	}
+	return 0;
+}
+
+// Xoa toan bo danh sach SV
+void ClearList(List& plist)
+{
+	plist.num = 0;
+}
+
+// Hàm chính
+int main(int argc, char** argv) {
+
+	List plist;
+	Sinhvien sv;
+	Init(plist);
+
+	int chon, x, i, k;
+	do {
+		// Nhap chon lua cua nguoi dùng
+		printf("\n\t------------------ CHUONG TRINH QUAN LY SINH VIEN DANH SACH DAC --------------------");
+		printf("\n\t 1: Nhap danh sach sinh vien\n");
+		printf("\n\t 2: Them sinh vien vao danh sach\n");
+		printf("\n\t 3: Xoa sinh vien khoi danh sach\n");
+		printf("\n\t 4: Hieu chinh thong tin sinh vien\n");
+		printf("\n\t 5: Sap xep danh sach sinh vien\n");
+		printf("\n\t 6: Tim kiem sinh vien\n");
+		printf("\n\t 7: Xoa toan bo danh sach\n");
+		printf("\t 0: Thoat (Bam phim bat ky de tiep tuc)\n");
+		printf("\t *************************************************************************************");
+		printf("\n\t Hay chon chuc nang: ");
+		scanf("%d", &chon);
+
+		// Thuc hien công viec cho lua chon tuong ung
+		switch (chon) {
+		case 1: // Nhap danh sach sinh vien
+			Nhapds(plist, sv);
+			printf("\n");
+			getch();
+			system("cls");
+			break;
+		case 2: // Thêm mot sinh vien moi vào danh sách
+			Insert(plist);
+			printf("\n");
+			getch();
+			system("cls");
+			break;
+		case 3:
+			printf("Nhap vi tri muon xoa: ");
+			scanf("%d", &x);
+			Delete(plist, x);
+			printf("\n");
+			getch();
+			system("cls");
+			break;
+		case 4:
+			printf("Nhap vi tri muon chinh sua: ");
+			scanf("%d", &i);
+			Update(plist, i);
+			printf("\n");
+			getch();
+			system("cls");
+			break;
+		case 5:
+			SortMSSV(plist, sv);
+			printf("\n");
+			getch();
+			system("cls");
+			break;
+		case 6:
+			printf("Nhap ho va ten sinh vien muon tim kiem: ");
+			cin >> k;
+			Find(plist, k);
+			printf("\n");
+			getch();
+			system("cls");
+			break;
+		case 7:
+			ClearList(plist);
+			printf("\n");
+			getch();
+			system("cls");
+			break;
+		default: chon = 0;
+			break;
+		}
+
+		//getch();
+
+	} while (chon != 0);
+	return 0;
+}
+
